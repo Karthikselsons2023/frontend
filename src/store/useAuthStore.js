@@ -16,6 +16,21 @@ export const useAuthStore = create((set,get)   => ({
   isUpdatingProfile: false,
   onlineUsers: [],
   socket:null,
+  allUsers: [],
+  isFetchingAllUsers: false,
+
+fetchAllUsers: async () => {
+  set({ isFetchingAllUsers: true });
+  try {
+    const res = await axiosInstance.get("/allusers");
+    set({ allUsers: res.data });
+  } catch (error) {
+    console.log("Error fetching all users:", error);
+  } finally {
+    set({ isFetchingAllUsers: false });
+  }
+},
+
 
    checkAuth: async () => {
       try {
