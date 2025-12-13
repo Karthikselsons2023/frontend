@@ -5,6 +5,7 @@ import { PencilLine } from 'lucide-react';
 import NewChatModal from "./ui/NewChatModal";
 import { CircleUser } from 'lucide-react';
 import ProfileDetailsModal from "./ui/ProfileDetailsModal";
+import { Link } from "react-router-dom";
 
 const chats = [
   { id: 1, name: "Regis Saffi", last: "Checkout this project" },
@@ -20,12 +21,12 @@ export default function Sidebar({ onSelect }) {
   return (
     <div className="h-full flex flex-col inter-large text-black">
         <div className="flex flex-row items-center justify-between p-4 font-semibold border-b inter-very-large text-2xl">
-          <h1>Selsons <span className="mycolortext inter-large">Chat </span></h1> 
+          <Link to="/"><h1>Selsons <span className="mycolortext inter-large">Chat </span></h1> </Link>
           <button onClick={() => setOpenProfile(true)} className="text-black cursor-pointer rounded-full"><CircleUser size={26} className=" " /></button>
         </div>
         
       <SearchSidebar value={query} onChange={setQuery} />
-      <div className="flex justify-between h-11 mb-3 items-center">
+      <div className="flex justify-between h-11 mb-2 items-center">
         <div className="flex flex-row">
           <Selector label={'All'} />
           <Selector label={'Groups'} />

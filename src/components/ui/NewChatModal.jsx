@@ -84,7 +84,7 @@ export default function NewChatModal({ open, onClose, title }) {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2 mt-1">
-                    <h2 className="text-lg font-medium">Start new chat</h2>
+                    <h2 className="text-lg font-medium text-[#0c16a7]">Start new chat</h2>
                     <button className="cursor-pointer" onClick={onClose}>
                         <X size={20} className="text-gray-500 hover:text-gray-700" />
                     </button>
@@ -118,7 +118,7 @@ export default function NewChatModal({ open, onClose, title }) {
                             <div
                                 key={user.user_id}
                                 className="flex items-center gap-3 p-3 rounded-lg
-                  hover:bg-[#edebff] cursor-pointer transition"
+                  hover:bg-[#e6ecff] cursor-pointer transition"
                             >
                                 <img
                                     src={user.profile}
