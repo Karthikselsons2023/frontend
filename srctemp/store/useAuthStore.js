@@ -2,9 +2,10 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 
 const BASE_URL = import.meta.env.MODE === "development" ? "https://socket-talk-api.onrender.com" : "https://socket-talk-api.onrender.com"
+const SOCKET_URL = "http://localhost:4000";
 
 export const useAuthStore = create((set,get)   => ({
   authUser: null,
@@ -80,24 +81,28 @@ export const useAuthStore = create((set,get)   => ({
     }
   },
 
-  connectSocket: ()=>{
-    const {authUser} = get();
-    if(!authUser || get().socket?.connected) return;
-    const socket = io(BASE_URL,{
-      query:{
-        userId: authUser._id,
-      },
-      transports: ["websocket", "polling"],
-      withCredentials: true,
-    })
-    socket.connect()
+  connectSocket: () => {
+  const { authUser } = get();
+  if (!authUser || get().socket) return;
 
-    set({socket:socket })
+  const socket = io(SOCKET_URL, {
+    query: { userId: authUser.user_id },
+  });
 
-    socket.on("getOnlineUsers",(userIds)=>{
-      set({onlineUsers: userIds})
-    })
-  },
+  set({ socket });
+
+  socket.on("connect", () => {
+    console.log("✅ Socket connected:", socket.id);
+  });
+
+  socket.on("getOnlineUsers", (users) => {
+    set({ onlineUsers: users });
+  });
+
+  socket.on("connect_error", (err) => {
+    console.error("❌ Socket error:", err.message);
+  });
+},
   disconnectSocket: ()=>{
     if(get().socket?.connected) get().socket.disconnect(); // check if connected and them disconnect
   },
