@@ -12,7 +12,7 @@ function SearchModal({
 }) {
     return (
         <div
-            className={`mt-5 mb-1 flex items-center gap-2 rounded-full border-2 border-gray-300 bg-white px-3 py-[7px] focus-within:border-[#998eff] ${className}`}
+            className={`mt-5 mb-1 flex items-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-3 py-[7px] focus-within:border-[#998eff] ${className}`}
         >
             <Search size={18} className="text-gray-500" />
             <input
@@ -43,7 +43,7 @@ export default function NewChatModal({ open, onClose, title }) {
             user.email.toLowerCase().includes(q)
         );
     }, [search, allUsers]);
-    
+
 
     useEffect(() => {
         document.body.style.overflow = open ? "hidden" : "";
@@ -118,7 +118,7 @@ export default function NewChatModal({ open, onClose, title }) {
                             <div
                                 key={user.user_id}
                                 className="flex items-center gap-3 p-3 rounded-lg
-                  hover:bg-gray-100 cursor-pointer transition"
+                  hover:bg-[#edebff] cursor-pointer transition"
                             >
                                 <img
                                     src={user.profile}

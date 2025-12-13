@@ -8,7 +8,7 @@ export default function SearchSidebar({
 }) {
   return (
     <div
-      className={`mx-3 mt-3 flex items-center gap-2 rounded-full border-2 border-gray-300 bg-white px-3 py-2 focus-within:border-[#998eff] ${className}`}
+      className={`mx-3 mt-3 flex items-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-3 py-[7px] focus-within:border-[#998eff] ${className}`}
     >
       <Search size={18} className="text-gray-500" />
       <input

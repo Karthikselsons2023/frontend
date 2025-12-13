@@ -3,6 +3,8 @@ import SearchSidebar from "./ui/SearchSidebar";
 import Selector from "./ui/Selector";
 import { PencilLine } from 'lucide-react';
 import NewChatModal from "./ui/NewChatModal";
+import { CircleUser } from 'lucide-react';
+import ProfileDetailsModal from "./ui/ProfileDetailsModal";
 
 const chats = [
   { id: 1, name: "Regis Saffi", last: "Checkout this project" },
@@ -12,20 +14,40 @@ const chats = [
 
 export default function Sidebar({ onSelect }) {
   const [open, setOpen] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
 
   const [query, setQuery] = useState("");
   return (
     <div className="h-full flex flex-col inter-large text-black">
-      <div className="p-4 font-semibold border-b inter-very-large text-2xl">Selsons <span className="mycolortext inter-large">Chat</span></div>
+        <div className="flex flex-row items-center justify-between p-4 font-semibold border-b inter-very-large text-2xl">
+          <h1>Selsons <span className="mycolortext inter-large">Chat </span></h1> 
+          <button onClick={() => setOpenProfile(true)} className="text-black cursor-pointer rounded-full"><CircleUser size={26} className=" " /></button>
+        </div>
+        
       <SearchSidebar value={query} onChange={setQuery} />
       <div className="flex justify-between h-11 mb-3 items-center">
         <div className="flex flex-row">
           <Selector label={'All'} />
           <Selector label={'Groups'} />
         </div>
-        <button onClick={() => setOpen(true)} className="bg-transparent border-[#d9d4ff] border-[2px] transition px-5 rounded-full items-center py-[5px] flex gap-2 mt-3 mr-3 hover:bg-[#d6d4ff] cursor-pointer text-sm">New Chat <PencilLine size={18}/></button>
+        <button onClick={() => setOpen(true)} className="bg-transparent border-[#d9d4ff] border-[1.5px] transition px-5 rounded-xl items-center py-[5px] flex gap-2 mt-3 mr-3 hover:bg-[#d6d4ff] cursor-pointer text-sm">New Chat <PencilLine size={16}/></button>
         
        
+
+       <ProfileDetailsModal
+        open={openProfile}
+        onClose={() => setOpenProfile(false)}
+        title="Start new chat"
+      >
+        
+
+        <button
+          onClick={() => setOpen(false)}
+          className="mt-6 w-full rounded-lg bg-indigo-600 py-2 text-white"
+        >
+          Continue
+        </button>
+      </ProfileDetailsModal>
 
       <NewChatModal
         open={open}
