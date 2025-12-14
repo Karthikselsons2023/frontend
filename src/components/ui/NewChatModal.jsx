@@ -36,7 +36,7 @@ export default function NewChatModal({ open, onClose, title }) {
     const [search, setSearch] = useState("");
     const filteredUsers = useMemo(() => {
         const q = search.toLowerCase().trim();
-        if (!q) return allUsers;
+        if (!q) return Array.isArray(allUsers) ? allUsers : [];
 
         return allUsers.filter((user) =>
             user.name.toLowerCase().includes(q) ||
@@ -51,7 +51,7 @@ export default function NewChatModal({ open, onClose, title }) {
     }, [open]);
 
     useEffect(() => {
-        if (open && allUsers.length === 0) {
+        if (open && Array.isArray(allUsers) && allUsers.length === 0) {
             fetchAllUsers();
         }
     }, [open]);
@@ -113,8 +113,11 @@ export default function NewChatModal({ open, onClose, title }) {
                         </p>
                     )}
 
+                    
+
                     {!isFetchingAllUsers &&
-                        filteredUsers.map((user) => (
+                        Array.isArray(filteredUsers) &&
+filteredUsers.map((user) => (
                             <div
                                 key={user.user_id}
                                 className="flex items-center gap-3 p-3 rounded-lg

@@ -6,6 +6,8 @@ import NewChatModal from "./ui/NewChatModal";
 import { CircleUser } from 'lucide-react';
 import ProfileDetailsModal from "./ui/ProfileDetailsModal";
 import { Link } from "react-router-dom";
+import OnlineUsersSidebar from "./OnlineUsersSlider.jsx";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 const chats = [
   { id: 1, name: "Regis Saffi", last: "Checkout this project" },
@@ -14,9 +16,9 @@ const chats = [
 ];
 
 export default function Sidebar({ onSelect }) {
+  const {onlineUsers} = useAuthStore()
   const [open, setOpen] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
-
   const [query, setQuery] = useState("");
   return (
     <div className="h-full flex flex-col inter-large text-black">
@@ -65,6 +67,7 @@ export default function Sidebar({ onSelect }) {
         </button>
       </NewChatModal>
       </div>
+      <OnlineUsersSidebar />
       <div className="flex-1 overflow-y-auto">
         {chats.map(chat => (
           <div

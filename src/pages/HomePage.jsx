@@ -3,7 +3,6 @@ import { useAuthStore } from "../store/useAuthStore.js";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import BottomNav from "../components/ui/BottomNav";
-import OnlineUsersSlider from "../components/OnlineUsersSlider";
 import NewChat from "../components/ui/NewChat";
 import LoginPage from "./LoginPage";
 import SettingsPage from "./SettingsPage.jsx";
