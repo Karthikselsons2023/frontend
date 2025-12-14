@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import { Dot } from 'lucide-react';
+import { useChatStore } from "../store/useChatStore";
 
 const OnlineUsersSlider = () => {
   const {
@@ -8,6 +10,8 @@ const OnlineUsersSlider = () => {
     fetchAllUsers,
     authUser,
   } = useAuthStore();
+
+  const {setSelectedUser} = useChatStore();
 
   // fetch all users once
   useEffect(() => {
@@ -38,11 +42,15 @@ const onlineUserDetails = useMemo(() => {
   }
 
   return (
-    <div className="flex gap-4 overflow-x-auto py-2">
+    <div>
+    <h2 className="flex text-green-600 text-xs items-center ml-3 mt-1 inter-very-large">Online Users:</h2>
+    <div className="flex gap-3 overflow-x-auto py-2 mx-2">
+      
       {onlineUserDetails.map(user => (
-        <div
+        <button
           key={user.user_id}
-          className="flex flex-col items-center min-w-[70px]"
+          className="cursor-pointer flex flex-col items-center min-w-[70px]"
+          onClick={()=>{setSelectedUser(user)}}
         >
           <img
             src={user.profile}
@@ -52,8 +60,9 @@ const onlineUserDetails = useMemo(() => {
           <span className="text-xs mt-1 text-center truncate w-16">
             {user.name}
           </span>
-        </div>
+        </button>
       ))}
+    </div>
     </div>
   );
 };

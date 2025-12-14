@@ -1,36 +1,26 @@
-import MessageInput from "./MessageInput";
+import ChatHeader from "./ui/ChatHeader";
+import MessageInput from "./ui/MessageInput";
+import ChatArea from "./ui/ChatArea";
 
 export default function ChatWindow({ chat, onBack }) {
   return (
-    <div className="h-full flex flex-col bg-gray-50">
-      {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-white border-b">
-        <button
-          onClick={onBack}
-          className="md:hidden text-xl"
-        >
-          ←
-        </button>
-        <div className="w-10 h-10 rounded-full bg-gray-300" />
-        <div className="font-medium">{chat.name}</div>
+    <div className="flex flex-col h-screen bg-gray-100">
+      
+
+      <div className="shrink-0 border-b bg-white">
+        <ChatHeader chat={chat} onBack={onBack} />
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
-        <div className="max-w-xs bg-white p-2 rounded-lg shadow">
-          Hey brother, are you into UI?
-        </div>
 
-        <div className="max-w-xs bg-green-500 text-white p-2 rounded-lg ml-auto">
-          Yeah, show me
-        </div>
-
-        <div className="max-w-xs bg-white p-2 rounded-lg shadow">
-          Checkout this project
-        </div>
+      <div className="flex-1 overflow-y-auto">
+        <ChatArea />
       </div>
 
-      <MessageInput />
+
+      <div className="shrink-0 border-t bg-white">
+        <MessageInput />
+      </div>
+
     </div>
   );
 }

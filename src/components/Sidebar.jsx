@@ -33,7 +33,7 @@ export default function Sidebar({ onSelect }) {
           <Selector label={'All'} />
           <Selector label={'Groups'} />
         </div>
-        <button onClick={() => setOpen(true)} className="bg-transparent border-[#d9d4ff] border-[1.5px] transition px-5 rounded-xl items-center py-[5px] flex gap-2 mt-3 mr-3 hover:bg-[#d6d4ff] cursor-pointer text-sm">New Chat <PencilLine size={16}/></button>
+        <button onClick={() => setOpen(true)} className="px-5 bg-[#edebff] inline-flex whitespace-nowrap items-center justify-center text-sm py-[5px] ml-3 mt-3 rounded-xl cursor-pointer hover:bg-[#d6d4ff] gap-2 mr-3">New Chat <PencilLine size={16} className=""/></button>
         
        
 
@@ -72,7 +72,6 @@ export default function Sidebar({ onSelect }) {
         {chats.map(chat => (
           <div
             key={chat.id}
-            onClick={() => onSelect(chat)}
             className="flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-100"
           >
             <div className="w-10 h-10 rounded-full bg-gray-300" />
