@@ -55,7 +55,7 @@ const MessageInput = () => {
     };
 
     return (
-        <div className="p-4 w-full bg-white text-main">
+        <div className="p-4 w-full nochatbg text-main border-t-1 border-gray-300">
             {imagePreview && (
                 <div className="mb-3 flex items-center gap-2">
                     <div className="relative">
@@ -79,7 +79,15 @@ const MessageInput = () => {
                 <div className="flex-1 flex gap-2">
                     <input
                         type="text"
-                        className="w-full input input-bordered rounded-xl border-2  sm:input-md bg-white text-black border-gray-300 focus-within:border-[#998eff]"
+                        className="
+    w-full input input-bordered rounded-xl border-2
+    bg-white text-black border-gray-300
+    outline-none
+    focus:outline-none
+    focus:ring-0
+    focus:shadow-none
+    focus:border-[#998eff]
+  "
                         value={text}
                         placeholder="Type a message..."
                         onChange={(e) => setText(e.target.value)}
@@ -95,7 +103,7 @@ const MessageInput = () => {
 
                     <button
                         type="button"
-                        className={`sm:flex btn btn-circle rounded-xl shadow-none bg-[#edebff]  border-1 border-gray-300 ${imagePreview ? "text-success" : "text-muted"
+                        className={`sm:flex btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300 ${imagePreview ? "text-success" : "text-muted"
                             }`}
                         onClick={() => fileInputRef.current?.click()}
                     >
@@ -105,7 +113,7 @@ const MessageInput = () => {
 
                 <button
                     type="submit"
-                    className="btn btn-circle rounded-xl shadow-none bg-[#ebebff] border-1 border-gray-300"
+                    className="btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300"
                     disabled={!text.trim() && !imagePreview}
                 >
                     <Send className='text-[#555555]' />

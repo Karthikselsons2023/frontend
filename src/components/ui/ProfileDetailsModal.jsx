@@ -37,7 +37,7 @@ export default function ProfileDetailsModal({ open, onClose }) {
       {/* Modal */}
       <div
         className={`
-          relative z-10 w-full max-w-sm
+          relative z-10 sm:w-full w-[80%] max-w-sm
           rounded-xl bg-white p-6 shadow-xl
           transform transition-all duration-200 ease-out
           ${open ? "scale-100 opacity-100" : "scale-95 opacity-0"}

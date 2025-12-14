@@ -120,6 +120,11 @@ body.light {
   background-color: #edebff;
 }
 
+.nochatbg{
+background: #F5F5FF;
+/* background: radial-gradient(circle,rgba(245, 245, 255, 1) 62%, rgba(255, 255, 255, 1) 100%); */
+}
+
 .mycolortext {
   color: #5754E8;
 }

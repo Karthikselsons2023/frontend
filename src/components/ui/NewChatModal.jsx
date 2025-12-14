@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { X } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { Search } from "lucide-react";
-
+import { useChatStore } from "../../store/useChatStore";
 
 function SearchModal({
     value,
@@ -12,7 +12,7 @@ function SearchModal({
 }) {
     return (
         <div
-            className={`mt-5 mb-1 flex items-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-3 py-[7px] focus-within:border-[#998eff] ${className}`}
+            className={`mt-5 mb-0 flex items-center gap-2 rounded-xl border-2 border-gray-300 bg-white px-3 py-[7px] focus-within:border-[#998eff] ${className}`}
         >
             <Search size={18} className="text-gray-500" />
             <input
@@ -28,10 +28,12 @@ function SearchModal({
 
 
 export default function NewChatModal({ open, onClose, title }) {
+    const { setSelectedUser } = useChatStore();
     const {
         allUsers,
         isFetchingAllUsers,
         fetchAllUsers,
+
     } = useAuthStore();
     const [search, setSearch] = useState("");
     const filteredUsers = useMemo(() => {
@@ -75,7 +77,7 @@ export default function NewChatModal({ open, onClose, title }) {
             {/* Modal */}
             <div
                 className={`
-          relative z-10 w-full max-w-md h-[70vh]
+          relative z-10 sm:w-full w-[85%] max-w-md h-[70vh]
           rounded-xl bg-white p-4 shadow-xl
           transform transition-all duration-200 ease-out
           ${open ? "scale-100 opacity-100" : "scale-95 opacity-0"}
@@ -113,14 +115,17 @@ export default function NewChatModal({ open, onClose, title }) {
                         </p>
                     )}
 
-                    
+
 
                     {!isFetchingAllUsers &&
                         Array.isArray(filteredUsers) &&
-filteredUsers.map((user) => (
-                            <div
+                        filteredUsers.map((user) => (
+                            <button
+                            onClick={()=>{
+                                setSelectedUser(user);
+                                onClose();}}
                                 key={user.user_id}
-                                className="flex items-center gap-3 p-3 rounded-lg
+                                className="flex items-center gap-3 p-3 w-full rounded-lg
                   hover:bg-[#e6ecff] cursor-pointer transition"
                             >
                                 <img
@@ -130,14 +135,14 @@ filteredUsers.map((user) => (
                                 />
 
                                 <div className="flex flex-col">
-                                    <span className="text-sm font-medium">
+                                    <span className="text-sm text-left font-medium">
                                         {user.name}
                                     </span>
-                                    <span className="text-xs text-gray-500">
+                                    <span className="text-xs text-left text-gray-500">
                                         {user.email}
                                     </span>
                                 </div>
-                            </div>
+                            </button>
                         ))}
                 </div>
             </div>

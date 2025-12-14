@@ -7,7 +7,7 @@ export default function ChatWindow({ chat, onBack }) {
     <div className="flex flex-col h-screen bg-gray-100">
       
 
-      <div className="shrink-0 border-b bg-white">
+      <div className="shrink-0 bg-white">
         <ChatHeader chat={chat} onBack={onBack} />
       </div>
 
@@ -17,7 +17,7 @@ export default function ChatWindow({ chat, onBack }) {
       </div>
 
 
-      <div className="shrink-0 border-t bg-white">
+      <div className="shrink-0  bg-white">
         <MessageInput />
       </div>
 

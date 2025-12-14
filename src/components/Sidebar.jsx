@@ -16,15 +16,16 @@ const chats = [
 ];
 
 export default function Sidebar({ onSelect }) {
-  const {onlineUsers} = useAuthStore()
+  const {onlineUsers,authUser} = useAuthStore();
   const [open, setOpen] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [query, setQuery] = useState("");
   return (
-    <div className="h-full flex flex-col inter-large text-black">
-        <div className="flex flex-row items-center justify-between p-4 font-semibold border-b inter-very-large text-2xl">
+    <div className="h-full flex flex-col inter-large text-black border-gray-300 border-r-1">
+        <div className="flex flex-row items-center justify-between p-4 font-semibold border-b bg-[#f3f4ff] border-gray-300 inter-very-large text-2xl">
           <Link to="/"><h1>Selsons <span className="mycolortext inter-large">Chat </span></h1> </Link>
           <button onClick={() => setOpenProfile(true)} className="text-black cursor-pointer rounded-full"><CircleUser size={26} className=" " /></button>
+          {/* <button onClick={() => setOpenProfile(true)} className="text-black cursor-pointer rounded-full"><img src={authUser.profile} className="h-8 w-8 rounded-full object-cover"/></button> */}
         </div>
         
       <SearchSidebar value={query} onChange={setQuery} />
@@ -33,7 +34,7 @@ export default function Sidebar({ onSelect }) {
           <Selector label={'All'} />
           <Selector label={'Groups'} />
         </div>
-        <button onClick={() => setOpen(true)} className="px-5 bg-[#edebff] inline-flex whitespace-nowrap items-center justify-center text-sm py-[5px] ml-3 mt-3 rounded-xl cursor-pointer hover:bg-[#d6d4ff] gap-2 mr-3">New Chat <PencilLine size={16} className=""/></button>
+        <button onClick={() => setOpen(true)} className="px-5 bg-[#edebff] inline-flex whitespace-nowrap items-center justify-center text-sm py-[5px] ml-3 mt-3 rounded-xl cursor-pointer hover:bg-[#d6d4ff] border-[#d6d4ff] border-[1.9px] gap-2 mr-3">New Chat <PencilLine size={16} className=""/></button>
         
        
 

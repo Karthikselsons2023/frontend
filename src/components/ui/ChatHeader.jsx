@@ -8,11 +8,11 @@ const ChatHeader = () => {
     const { onlineUsers } = useAuthStore();
 
   return (
-    <div className="bg-white text-main flex justify-between border-b border-surface border-l-1">
+    <div className="nochatbg text-main flex justify-between border-b-1 border-gray-300 ">
             <div className="flex p-3 gap-5">
               <img
                   src={selectedUser.profile || "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"}
-                  className="size-10 rounded-full border border-muted p-[0.1rem]"
+                  className="size-10 object-cover rounded-full border border-muted p-[0.1rem]"
               />
               <div>
                 <h2 className="inter-very-large text-black">{selectedUser.name}</h2>
