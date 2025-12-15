@@ -1,35 +1,81 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import toast from "react-hot-toast";
 import { useChatStore } from '../../store/useChatStore';
-import { Image } from 'lucide-react';
-import { Send } from 'lucide-react';
-import { X } from 'lucide-react';
+import { Image, Send, X, FileText, File, FileIcon, FileType2, FileTerminal, FileVideo } from 'lucide-react';
+
+const getFileIcon = (mimeType) => {
+    if (mimeType.startsWith('image/')) {
+        return Image;
+    }
+    if (mimeType.startsWith('text/') || mimeType.endsWith('/pdf')) {
+        return FileText;
+    }
+    if (mimeType.endsWith('/msword') || mimeType.endsWith('/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+        return FileText;
+    }
+    if (mimeType.startsWith('video/')) {
+        return FileVideo;
+    }
+    if (mimeType.endsWith('/zip') || mimeType.endsWith('/rar')) {
+        return FileTerminal;
+    }
+    // Default icon for any other file type
+    return FileIcon;
+};
+
 
 const MessageInput = () => {
     const [text, setText] = useState("");
-    const [imagePreview, setImagePreview] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
+    const [attachmentPreview, setAttachmentPreview] = useState(null);
+    const [attachmentFile, setAttachmentFile] = useState(null);
     const fileInputRef = useRef(null);
     const { sendMessage } = useChatStore();
 
+    // Memoize the icon and name for easy access in the JSX
+    const previewDetails = useMemo(() => {
+        if (!attachmentFile) return null;
+        const Icon = getFileIcon(attachmentFile.type);
+        return {
+            Icon,
+            name: attachmentFile.name,
+            mimeType: attachmentFile.type,
+            size: attachmentFile.size,
+        };
+    }, [attachmentFile]);
 
-    const handleImageChange = (e) => {
+
+    const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (!file?.type?.startsWith("image/")) {
-            toast.error("Please select an image file");
+        if (!file) return;
+
+        setAttachmentFile(null);
+        setAttachmentPreview(null);
+
+        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+        if (file.size > MAX_SIZE) {
+            toast.error("File size must be less than 10MB");
+            e.target.value = null; // Reset the input field
             return;
         }
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImagePreview(reader.result);
-            setImageFile(file);
-        };
-        reader.readAsDataURL(file);
+        setAttachmentFile(file);
+
+
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAttachmentPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+
+            setAttachmentPreview(file.name);
+        }
     };
 
-    const removeImage = () => {
-        setImagePreview(null);
+    const removeAttachment = () => {
+        setAttachmentPreview(null);
+        setAttachmentFile(null);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -37,39 +83,77 @@ const MessageInput = () => {
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        // if (!text && !imageFile) {
-        //     toast.error("Please type a message or select an image");
-        //     return;
-        // }
 
-        // try {
-        //     await sendMessage({ text: text.trim(), image: imagePreview });
-        //     setText("");
-        //     setImagePreview(null);
-        //     if (fileInputRef.current) fileInputRef.current.value = "";
-        // } catch (error) {
-        //     console.error("Failed to send message:", error);
-        // }
 
-        toast.success('Successfully clicked')
+        if (!text.trim() && !attachmentFile) {
+            toast.error("Please type a message or select a file");
+            return;
+        }
+        const messagePayload = {
+            text: text.trim(),
+            attachment: attachmentFile, // The actual File object
+            // imagePreview: attachmentPreview // Optional: if you need the base64/Data URL
+        };
+
+        const formData = new FormData();
+        formData.append(('text', text.trim()));
+        formData.append('attachment', attachmentFile);
+        const routeUrl = "/api/messages"
+        try {
+            const response = await fetch(routeUrl, {
+                method: 'POST',
+                // necessary boundary string, which is required for file uploads.
+                // headers: { 'Content-Type': 'multipart/form-data' } <-- DO NOT DO THIS
+                body: formData // Send the FormData object directly
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Message sent successfully:', result);
+
+
+            // toast.success(`Sending: "${text.trim() || ''}" File: ${attachmentFile?.name || ''}`);
+            setText("");
+            removeAttachment();
+        } catch (error) {
+            console.error("Failed to send message:", error);
+            toast.error("Failed to send message.");
+        }
     };
 
     return (
         <div className="p-4 w-full nochatbg text-main border-t-1 border-gray-300">
-            {imagePreview && (
+
+            {attachmentFile && previewDetails && (
                 <div className="mb-3 flex items-center gap-2">
-                    <div className="relative">
-                        <img
-                            src={imagePreview}
-                            alt="Preview"
-                            className="w-20 h-20 object-cover rounded-lg border border-muted"
-                        />
+                    <div className="relative p-2 rounded-lg border border-gray-300 flex items-center bg-white">
+
+
+                        {previewDetails.mimeType.startsWith('image/') && attachmentPreview ? (
+                            <img
+                                src={attachmentPreview}
+                                alt="Image Preview"
+                                className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                            />
+                        ) : (
+                            <previewDetails.Icon className='w-8 h-8 text-[#998eff]' />
+                        )}
+
+
+                        <span className="ml-3 text-sm text-black max-w-xs truncate" title={previewDetails.name}>
+                            {previewDetails.name}
+                        </span>
+
+
                         <button
-                            onClick={removeImage}
-                            className="p-1 cursor-pointer absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-surface flex items-center justify-center"
+                            onClick={removeAttachment}
+                            className="p-1 cursor-pointer absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
                             type="button"
                         >
-                            <X />
+                            <X className='w-4 h-4' />
                         </button>
                     </div>
                 </div>
@@ -95,26 +179,24 @@ const MessageInput = () => {
 
                     <input
                         type="file"
-                        accept="image/*"
                         className="hidden"
                         ref={fileInputRef}
-                        onChange={handleImageChange}
+                        onChange={handleFileChange}
                     />
 
                     <button
                         type="button"
-                        className={`sm:flex btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300 ${imagePreview ? "text-success" : "text-muted"
-                            }`}
+                        className={`sm:flex btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300 ${attachmentFile ? "text-success border-[#998eff]" : "text-muted"}`}
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        <Image className='text-[#555555]' />
+                        <FileType2 className='text-[#555555]' />
                     </button>
                 </div>
 
                 <button
                     type="submit"
                     className="btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300"
-                    disabled={!text.trim() && !imagePreview}
+                    disabled={!text.trim() && !attachmentFile}
                 >
                     <Send className='text-[#555555]' />
                 </button>

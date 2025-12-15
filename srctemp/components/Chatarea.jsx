@@ -23,7 +23,7 @@ const Chatarea = () => {
         subscribeToMessages();
         return () => unsubscribeToMessages();
     }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeToMessages]);
-
+    
     useEffect(() => {
         if (messageEndRef.current && messages) {
             messageEndRef.current.scrollIntoView({ behavior: "smooth" });

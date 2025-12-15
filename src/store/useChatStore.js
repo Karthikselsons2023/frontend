@@ -11,6 +11,52 @@ export const useChatStore = create((set, get) => ({
   isMessagesLoading: false,
   currentPage: 'home',
 
+
+  getUsers: async () => {
+    set({ isUsersLoading: true });
+    try {
+      const res = await axiosInstance.get("/messages/users");
+      set({ users: res.data });
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isUsersLoading: false });
+    }
+  },
+
+  getMessages: async (userId) => {
+    set({ isMessagesLoading: true });
+    try {
+      const res = await axiosInstance.get(`/messages/${userId}`);
+      set({ messages: res.data });
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isMessagesLoading: false });
+    }
+  },
+
+  subscribeToMessages:()=>{
+    const {selectedUser} = get()
+    if(!selectedUser){
+      return;
+    }
+    const socket = useAuthStore.getState().socket;
+    socket.on("newMessage",(newMessage)=> {
+      if(newMessage.senderId !== selectedUser._id){ //to check if the message is being added to the screen of the selected user
+        return;
+      }
+      set({
+        messages: [...get().messages,newMessage]
+      })
+    })
+
+  },
+
+  unsubscribeToMessages:()=>{
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
+  },
   setPage: (page) => {
     console.log("Setting page to:", page);
     set({ currentPage: page })
@@ -18,5 +64,15 @@ export const useChatStore = create((set, get) => ({
   setSelectedUser: (selectedUser) => {
     set({ selectedUser });
   },
+  sendMessage: async (messageData) => {
+    const {selectedUser, messages} = get();
+    try {
+      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData )
+      set({messages : [...messages,res.data]});
+    }
+    catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
 
 }));
