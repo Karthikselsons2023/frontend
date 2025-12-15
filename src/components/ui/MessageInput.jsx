@@ -1,7 +1,8 @@
 import React, { useRef, useState, useMemo } from 'react';
 import toast from "react-hot-toast";
 import { useChatStore } from '../../store/useChatStore';
-import { Image, Send, X, FileText, File, FileIcon, FileType2, FileTerminal, FileVideo } from 'lucide-react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Image, Send, Paperclip, X, FileText, File, FileIcon, FileType2, FileTerminal, FileVideo } from 'lucide-react';
 
 const getFileIcon = (mimeType) => {
     if (mimeType.startsWith('image/')) {
@@ -29,7 +30,8 @@ const MessageInput = () => {
     const [attachmentPreview, setAttachmentPreview] = useState(null);
     const [attachmentFile, setAttachmentFile] = useState(null);
     const fileInputRef = useRef(null);
-    const { sendMessage } = useChatStore();
+    const { sendMessage, selectedUser } = useChatStore();
+    const { authUser } = useAuthStore();
 
     // Memoize the icon and name for easy access in the JSX
     const previewDetails = useMemo(() => {
@@ -51,9 +53,9 @@ const MessageInput = () => {
         setAttachmentFile(null);
         setAttachmentPreview(null);
 
-        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+        const MAX_SIZE = 20 * 1024 * 1024; // 10MB
         if (file.size > MAX_SIZE) {
-            toast.error("File size must be less than 10MB");
+            toast.error("File size must be less than 20MB");
             e.target.value = null; // Reset the input field
             return;
         }
@@ -81,48 +83,54 @@ const MessageInput = () => {
         }
     };
 
+    // const handleSendMessage = async (e) => {
+    //     e.preventDefault();
+
+    //     if (!text.trim() && !attachmentFile) {
+    //         toast.error("Please type a message or select a file");
+    //         return;
+    //     }
+
+    //     const formData = new FormData();
+    //     formData.append("message_text", text.trim());
+    //     if (attachmentFile) {
+    //         formData.append("attachment", attachmentFile);
+    //     }
+    //     formData.append("receiver_id", selectedUser.user_id);
+    //     formData.append("sender_id", authUser.user_id);
+
+    //     await sendMessage({
+    //         sender_id : authUser.user_id,
+    //         receiver_id : selectedUser.user_id,
+    //         message_text : text.trim(),
+    //     });
+
+    //     setText("");
+    //     removeAttachment();
+    // };
+
     const handleSendMessage = async (e) => {
-        e.preventDefault();
+  e.preventDefault();
 
+  if (!text.trim()) {
+    toast.error("Please type a message");
+    return;
+  }
 
-        if (!text.trim() && !attachmentFile) {
-            toast.error("Please type a message or select a file");
-            return;
-        }
-        const messagePayload = {
-            text: text.trim(),
-            attachment: attachmentFile, // The actual File object
-            // imagePreview: attachmentPreview // Optional: if you need the base64/Data URL
-        };
+    console.log("Sending message payload:", {
+  sender_id: authUser.user_id,
+  receiver_id: selectedUser.user_id,
+  message_text: text.trim(),
+}); 
+  await sendMessage({
+    sender_id: authUser.user_id,
+    receiver_id: selectedUser.user_id,
+    message_text: text.trim(),
+  });
 
-        const formData = new FormData();
-        formData.append(('text', text.trim()));
-        formData.append('attachment', attachmentFile);
-        const routeUrl = "/api/messages"
-        try {
-            const response = await fetch(routeUrl, {
-                method: 'POST',
-                // necessary boundary string, which is required for file uploads.
-                // headers: { 'Content-Type': 'multipart/form-data' } <-- DO NOT DO THIS
-                body: formData // Send the FormData object directly
-            });
+  setText("");
+};
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('Message sent successfully:', result);
-
-
-            // toast.success(`Sending: "${text.trim() || ''}" File: ${attachmentFile?.name || ''}`);
-            setText("");
-            removeAttachment();
-        } catch (error) {
-            console.error("Failed to send message:", error);
-            toast.error("Failed to send message.");
-        }
-    };
 
     return (
         <div className="p-4 w-full nochatbg text-main border-t-1 border-gray-300">
@@ -169,7 +177,7 @@ const MessageInput = () => {
     outline-none
     focus:outline-none
     focus:ring-0
-    focus:shadow-none
+    focus:shadow-none inter-large text-sm
     focus:border-[#998eff]
   "
                         value={text}
@@ -186,17 +194,17 @@ const MessageInput = () => {
 
                     <button
                         type="button"
-                        className={`sm:flex btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300 ${attachmentFile ? "text-success border-[#998eff]" : "text-muted"}`}
+                        className={`sm:flex hover:border-[#b6b5ff] btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300 ${attachmentFile ? "text-success border-[#998eff]" : "text-muted"}`}
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        <FileType2 className='text-[#555555]' />
+                        <Paperclip className='text-[#555555]' />
                     </button>
                 </div>
 
                 <button
                     type="submit"
-                    className="btn btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300"
-                    disabled={!text.trim() && !attachmentFile}
+                    className="btn hover:border-[#b6b5ff] btn-circle rounded-xl shadow-none bg-white border-2 border-gray-300"
+                    disabled={!text.trim()}
                 >
                     <Send className='text-[#555555]' />
                 </button>

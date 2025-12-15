@@ -24,34 +24,55 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  getMessages: async (userId) => {
-    set({ isMessagesLoading: true });
-    try {
-      const res = await axiosInstance.get(`/messages/${userId}`);
-      set({ messages: res.data });
-    } catch (error) {
-      toast.error(error.response.data.message);
-    } finally {
-      set({ isMessagesLoading: false });
-    }
-  },
 
-  subscribeToMessages:()=>{
-    const {selectedUser} = get()
-    if(!selectedUser){
-      return;
-    }
-    const socket = useAuthStore.getState().socket;
-    socket.on("newMessage",(newMessage)=> {
-      if(newMessage.senderId !== selectedUser._id){ //to check if the message is being added to the screen of the selected user
-        return;
-      }
-      set({
-        messages: [...get().messages,newMessage]
-      })
-    })
 
-  },
+
+  getMessages: async ({ sender_id, receiver_id }) => {
+  if (!sender_id || !receiver_id) return;
+
+  set({ isMessagesLoading: true });
+
+  try {
+    const res = await axiosInstance.get(
+      `/chat/getMessages?receiver_id=${receiver_id}&sender_id=${sender_id}`
+    );
+
+    console.log("received messages:", res.data);
+
+    set({ messages: res.data.messages });
+  } catch (error) {
+    toast.error(
+      error?.response?.data?.message || "Failed to load messages"
+    );
+  } finally {
+    set({ isMessagesLoading: false });
+  }
+},
+
+
+  
+
+  subscribeToMessages: () => {
+  const { selectedUser } = get();
+  if (!selectedUser) return;
+
+  const socket = useAuthStore.getState().socket;
+  const authUser = useAuthStore.getState().authUser;
+
+  socket.on("newMessage", (newMessage) => {
+  const isCurrentChat =
+    (newMessage.user_id === selectedUser.user_id &&
+      newMessage.receiver_id === authUser.user_id) ||
+    (newMessage.user_id === authUser.user_id &&
+      newMessage.receiver_id === selectedUser.user_id);
+
+  if (!isCurrentChat) return;
+
+  set({ messages: [...get().messages, newMessage] });
+});
+
+},
+
 
   unsubscribeToMessages:()=>{
     const socket = useAuthStore.getState().socket;
@@ -64,15 +85,10 @@ export const useChatStore = create((set, get) => ({
   setSelectedUser: (selectedUser) => {
     set({ selectedUser });
   },
-  sendMessage: async (messageData) => {
-    const {selectedUser, messages} = get();
-    try {
-      const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData )
-      set({messages : [...messages,res.data]});
-    }
-    catch (error) {
-      toast.error(error.response.data.message);
-    }
-  }
+ sendMessage: async (payload) => {
+  console.log("POST /chat/send payload:", payload);
+  await axiosInstance.post("/chat/send", payload);
+}
+
 
 }));

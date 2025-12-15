@@ -21,10 +21,10 @@ export default function Sidebar({ onSelect }) {
   const [openProfile, setOpenProfile] = useState(false);
   const [query, setQuery] = useState("");
   return (
-    <div className="h-full flex flex-col inter-large text-black border-gray-300 border-r-1">
+    <div className="h-full flex flex-col inter-large text-[#383838] border-gray-300 border-r-1">
         <div className="flex flex-row items-center justify-between p-4 font-semibold border-b bg-[#f3f4ff] border-gray-300 inter-very-large text-2xl">
           <Link to="/"><h1>Selsons <span className="mycolortext inter-large">Chat </span></h1> </Link>
-          <button onClick={() => setOpenProfile(true)} className="text-black cursor-pointer rounded-full"><CircleUser size={26} className=" " /></button>
+          <button onClick={() => setOpenProfile(true)} className="text-[#383838] hover:text-[#5754E8] cursor-pointer rounded-full"><CircleUser size={26} className=" " /></button>
           {/* <button onClick={() => setOpenProfile(true)} className="text-black cursor-pointer rounded-full"><img src={authUser.profile} className="h-8 w-8 rounded-full object-cover"/></button> */}
         </div>
         
