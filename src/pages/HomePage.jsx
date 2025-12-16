@@ -8,32 +8,45 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from "../components/Sidebar.jsx";
 import ChatWindow from "../components/ChatWindow.jsx";
 import { MessageSquareHeart } from 'lucide-react';
+import GroupWindow from "../components/GroupWindow.jsx";
 
 
 
 export default function HomePage() {
   const { authUser, isLogginIn, checkAuth, currentPage } = useAuthStore();
-  const { selectedUser, setSelectedUser } = useChatStore();
+  const { selectedUser, setSelectedUser, selectedGroupId } = useChatStore();
 
   console.log("Auth User in HomePage:", authUser);
   return (
     <div className="h-screen flex bg-white">
       {/* Sidebar */}
       <div
-        className={`w-full md:w-1/3 bg-white ${selectedUser ? "hidden md:block" : "block"
-          }`}
-      >
+  className={`w-full md:w-1/3 bg-white ${
+    selectedUser || selectedGroupId ? "hidden md:block" : "block"
+  }`}
+>
+
         <Sidebar />
       </div>
 
       {/* Chat Window */}
       <div
-        className={`flex-1 ${selectedUser ? "block" : "hidden md:flex"
+        className={`flex-1 ${selectedUser || selectedGroupId ? "block" : "hidden md:flex"
           }`}
       >
         {selectedUser ? (
           <ChatWindow onBack={() => setSelectedUser(null)} />
         ) : (
+          null
+        )}
+
+        {selectedGroupId && !selectedUser ? (
+          <GroupWindow />
+        ) : (
+          null
+        )}
+
+        {(selectedUser === null && selectedGroupId === null) ? (
           <div className="flex items-center justify-center gap-3 w-full text-gray-400 nochatbg flex-col">
             <MessageSquareHeart
               size={60}
@@ -55,6 +68,8 @@ export default function HomePage() {
               Select a Contact to Chat!
             </h1>
           </div>
+        ) : (
+          null
         )}
       </div>
     </div>

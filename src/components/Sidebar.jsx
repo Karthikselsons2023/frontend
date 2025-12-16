@@ -34,7 +34,7 @@ export default function Sidebar({ onSelect }) {
           <Selector label={'All'} />
           <Selector label={'Groups'} />
         </div>
-        <button onClick={() => setOpen(true)} className="px-5 bg-[#edebff] inline-flex whitespace-nowrap items-center justify-center text-sm py-[5px] ml-3 mt-3 rounded-xl cursor-pointer hover:bg-[#d6d4ff] border-[#d6d4ff] border-[1.9px] gap-2 mr-3">New Chat <PencilLine size={16} className=""/></button>
+        <button onClick={() => setOpen(true)} className="px-5 bg-[#668AFF] text-white inline-flex whitespace-nowrap items-center justify-center text-sm py-[5px] ml-3 mt-3 rounded-xl cursor-pointer hover:bg-[#5878df] hover:border-[#5878df] border-[#668AFF] border-[1.9px] gap-2 mr-3">New Chat / Group <PencilLine size={16} className=""/></button>
         
        
 

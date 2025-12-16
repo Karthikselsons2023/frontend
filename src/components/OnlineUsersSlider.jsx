@@ -55,7 +55,7 @@ const onlineUserDetails = useMemo(() => {
           <img
             src={user.profile}
             alt={user.name}
-            className="w-12 h-12 rounded-full object-cover border"
+            className="w-12 h-12 rounded-full object-cover border-3 border-[#668AFF]"
           />
           <span className="text-xs mt-1 text-center truncate w-16">
             {user.name}

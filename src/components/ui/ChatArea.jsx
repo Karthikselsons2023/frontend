@@ -68,22 +68,22 @@ const ChatArea = () => {
         return (
           <div
             key={`${message.user_id}-${message.created_at}-${index}`}
-            className={`chat ${isMine ? "chat-end" : "chat-start"}`}
+            className={`chat   ${isMine ? "chat-end " : "chat-start"}`}
           >
-            <div className="chat-header mb-1">
+            <div className="chat-header  mb-1 text-black">
               <time className="text-xs opacity-50">
                 {formatMessageTime(message.created_at)}
               </time>
             </div>
 
-            <div className="chat-bubble bg-surface-dark text-main">
-              {message.message_text}
+            <div className={`chat-bubble ${isMine ? "bg-[#5878DF]" : "bg-[#2f2f2f]"} rounded-xl`}>
+              <h2>{message.message_text}</h2>
             </div>
           </div>
         );
       })}
       {isTyping && (
-  <div className="text-sm mb-3 text-gray-400 italic ml-2">
+  <div className="text-sm mb-3 text-gray-800 italic ml-2">
     typing...
   </div>
 )}

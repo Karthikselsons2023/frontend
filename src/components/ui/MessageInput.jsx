@@ -102,7 +102,7 @@ const {
 
   typingTimeoutRef.current = setTimeout(() => {
     emitStopTyping();
-  }, 2000); // stops after 800ms of no typing
+  }, 1000); // stops after 800ms of no typing
 };
     // const handleSendMessage = async (e) => {
     //     e.preventDefault();

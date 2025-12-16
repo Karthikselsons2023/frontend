@@ -11,6 +11,10 @@ export const useChatStore = create((set, get) => ({
   isMessagesLoading: false,
   currentPage: 'home',
   isTyping: false,
+  creatingGroup: false,
+  selectedGroupId: null,
+  groupInfo: {},
+  isFetchingGroupInfo: false,
 
   emitTyping: () => {
     const socket = useAuthStore.getState().socket;
@@ -63,8 +67,36 @@ export const useChatStore = create((set, get) => ({
   clearMessages : async () => {
     set({messages: []});
   },
+  createGroup : async ({group_name, auth_user_id,member_ids,description, group_img}) => {
+    if(!group_name || !member_ids || !auth_user_id){
+      return;
+    }
+    set({creatingGroup: true});
+    try {
+      const res = await axiosInstance.post("/chat/createGroup", {
+        group_name: group_name,
+        auth_user_id: auth_user_id,
+        member_ids: member_ids,
+        description: description,
+        group_img, group_img
+      });
+      
+      const result = res.data;
+      set({selectedUser: null});
+      set({selectedGroupId: result.chat_id});
+      console.log("created group id: ",result.chat_id);
+      
+      
+    } catch (error) {
+      console.log("error in creating group/ sending group data: ",error);
+    }finally{
+      set({creatingGroup: false});
+    }
+  },
 
-
+  setSelectedGroupId: async ({selectedGroupId}) => {
+    set({selectedGroupId: selectedGroupId})
+  },
 
   getUsers: async () => {
     set({ isUsersLoading: true });
@@ -77,9 +109,6 @@ export const useChatStore = create((set, get) => ({
       set({ isUsersLoading: false });
     }
   },
-
-
-
 
   getMessages: async ({ sender_id, receiver_id }) => {
   if (!sender_id || !receiver_id) return;
@@ -103,9 +132,6 @@ export const useChatStore = create((set, get) => ({
   }
 },
 
-
-  
-
   subscribeToMessages: () => {
   const { selectedUser } = get();
   if (!selectedUser) return;
@@ -127,7 +153,6 @@ export const useChatStore = create((set, get) => ({
 
 },
 
-
   unsubscribeToMessages:()=>{
     const socket = useAuthStore.getState().socket;
     socket.off("newMessage");
@@ -140,12 +165,35 @@ export const useChatStore = create((set, get) => ({
     set({ selectedUser,
       messages: [], 
      });
+     set({selectedGroupId: null});
     
   },
  sendMessage: async (payload) => {
   console.log("POST /chat/send payload:", payload);
   await axiosInstance.post("/chat/send", payload);
+},
+
+setGroupInfo: async () => {
+  set({ isFetchingGroupInfo: true });
+
+  const selectedGroupId = get().selectedGroupId;
+
+  try {
+    const res = await axiosInstance.get(
+      `/chat/groupInfo?chatId=${selectedGroupId}`
+    );
+
+    const result = res.data;
+
+    set({ groupInfo: result.groupInfo });
+    console.log("Group info:", result);
+  } catch (error) {
+    console.log("error in fetching group info in frontend:", error);
+  } finally {
+    set({ isFetchingGroupInfo: false });
+  }
 }
+
 
 
 }));

@@ -4,7 +4,7 @@ import { useChatStore } from '../../store/useChatStore'
 import { useAuthStore } from '../../store/useAuthStore';
 
 const ChatHeader = () => {
-    const {selectedUser,setSelectedUser} = useChatStore();
+    const {selectedUser,setSelectedUser, setSelectedGroupId,selectedGroupId} = useChatStore();
     const { onlineUsers } = useAuthStore();
 
   return (
@@ -24,7 +24,9 @@ const ChatHeader = () => {
               </div>
             </div>
     
-            <button onClick={() => setSelectedUser(null)} className="cursor-pointer mr-5 text-black">
+            <button onClick={() => {setSelectedUser(null);
+              setSelectedGroupId(null);
+            }} className="cursor-pointer mr-5 text-black">
               <X />
             </button>
           </div>

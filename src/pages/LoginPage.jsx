@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 
 export default function LoginPage() {
-  const {login, isLoggingIn} = useAuthStore();
+  const {login, isLoggingIn,authUser} = useAuthStore();
   const [formData, setFormData] = useState({
       email: "",
       password: "",
@@ -33,7 +33,7 @@ export default function LoginPage() {
     // }
     return true;
   };
-
+  console.log("current auth suer: ", authUser);
 
    const handleSubmit = (e) => {
     e.preventDefault();
