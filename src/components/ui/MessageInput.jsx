@@ -30,8 +30,17 @@ const MessageInput = () => {
     const [attachmentPreview, setAttachmentPreview] = useState(null);
     const [attachmentFile, setAttachmentFile] = useState(null);
     const fileInputRef = useRef(null);
-    const { sendMessage, selectedUser } = useChatStore();
+    
     const { authUser } = useAuthStore();
+
+const { 
+  sendMessage, 
+  selectedUser, 
+  emitTyping, 
+  emitStopTyping 
+} = useChatStore();
+
+    const typingTimeoutRef = useRef(null);
 
     // Memoize the icon and name for easy access in the JSX
     const previewDetails = useMemo(() => {
@@ -82,7 +91,19 @@ const MessageInput = () => {
             fileInputRef.current.value = "";
         }
     };
+    const handleTyping = (e) => {
+  setText(e.target.value);
 
+  emitTyping();
+
+  if (typingTimeoutRef.current) {
+    clearTimeout(typingTimeoutRef.current);
+  }
+
+  typingTimeoutRef.current = setTimeout(() => {
+    emitStopTyping();
+  }, 2000); // stops after 800ms of no typing
+};
     // const handleSendMessage = async (e) => {
     //     e.preventDefault();
 
@@ -130,6 +151,8 @@ const MessageInput = () => {
 
   setText("");
 };
+
+    
 
 
     return (
@@ -182,7 +205,8 @@ const MessageInput = () => {
   "
                         value={text}
                         placeholder="Type a message..."
-                        onChange={(e) => setText(e.target.value)}
+                        onChange={handleTyping}
+
                     />
 
                     <input

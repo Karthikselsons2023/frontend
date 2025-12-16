@@ -10,6 +10,60 @@ export const useChatStore = create((set, get) => ({
   isUsersLoading: false,
   isMessagesLoading: false,
   currentPage: 'home',
+  isTyping: false,
+
+  emitTyping: () => {
+    const socket = useAuthStore.getState().socket;
+    const authUser = useAuthStore.getState().authUser;
+    const { selectedUser } = get();
+
+    if (!selectedUser) return;
+
+    socket.emit("typing", {
+      senderId: authUser.user_id,
+      receiverId: selectedUser.user_id,
+    });
+  },
+
+  emitStopTyping: () => {
+    const socket = useAuthStore.getState().socket;
+    const authUser = useAuthStore.getState().authUser;
+    const { selectedUser } = get();
+
+    if (!selectedUser) return;
+
+    socket.emit("stopTyping", {
+      senderId: authUser.user_id,
+      receiverId: selectedUser.user_id,
+    });
+  },
+
+  subscribeToTyping: () => {
+    const socket = useAuthStore.getState().socket;
+    const { selectedUser } = get();
+
+    socket.on("typing", ({ senderId }) => {
+      if (senderId === selectedUser?.user_id) {
+        set({ isTyping: true });
+      }
+    });
+
+    socket.on("stopTyping", ({ senderId }) => {
+      if (senderId === selectedUser?.user_id) {
+        set({ isTyping: false });
+      }
+    });
+  },
+
+  unsubscribeFromTyping: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("typing");
+    socket.off("stopTyping");
+  },
+  clearMessages : async () => {
+    set({messages: []});
+  },
+
 
 
   getUsers: async () => {
@@ -83,7 +137,10 @@ export const useChatStore = create((set, get) => ({
     set({ currentPage: page })
   },
   setSelectedUser: (selectedUser) => {
-    set({ selectedUser });
+    set({ selectedUser,
+      messages: [], 
+     });
+    
   },
  sendMessage: async (payload) => {
   console.log("POST /chat/send payload:", payload);

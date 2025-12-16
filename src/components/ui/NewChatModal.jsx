@@ -28,7 +28,7 @@ function SearchModal({
 
 
 export default function NewChatModal({ open, onClose, title }) {
-    const { setSelectedUser } = useChatStore();
+    const { setSelectedUser,clearMessages } = useChatStore();
     const {
         allUsers,
         isFetchingAllUsers,
@@ -44,21 +44,29 @@ export default function NewChatModal({ open, onClose, title }) {
             user.name.toLowerCase().includes(q) ||
             user.email.toLowerCase().includes(q)
         );
-    }, [search, allUsers]);
+}, [search, allUsers]);
 
 
-    useEffect(() => {
-        document.body.style.overflow = open ? "hidden" : "";
-        return () => (document.body.style.overflow = "");
-    }, [open]);
 
-    useEffect(() => {
-        if (open && Array.isArray(allUsers) && allUsers.length === 0) {
-            fetchAllUsers();
-        }
-    }, [open]);
 
-    return (
+function handleUserClick(user) {
+    setSelectedUser(user);
+    clearMessages();
+    onClose();
+}
+
+useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+}, [open]);
+
+useEffect(() => {
+    if (open && Array.isArray(allUsers) && allUsers.length === 0) {
+        fetchAllUsers();
+    }
+}, [open]);
+
+return (
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center
         ${open ? "pointer-events-auto" : "pointer-events-none"}
@@ -121,9 +129,7 @@ export default function NewChatModal({ open, onClose, title }) {
                         Array.isArray(filteredUsers) &&
                         filteredUsers.map((user) => (
                             <button
-                            onClick={()=>{
-                                setSelectedUser(user);
-                                onClose();}}
+                            onClick={() => handleUserClick(user)}
                                 key={user.user_id}
                                 className="flex items-center gap-3 p-3 w-full rounded-lg
                   hover:bg-[#e6ecff] cursor-pointer transition"

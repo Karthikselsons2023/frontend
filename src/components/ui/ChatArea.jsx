@@ -13,6 +13,9 @@ const ChatArea = () => {
     selectedUser,
     subscribeToMessages,
     unsubscribeToMessages,
+    subscribeToTyping,
+    unsubscribeFromTyping,
+    isTyping,
   } = useChatStore();
 
   const { authUser } = useAuthStore();
@@ -27,17 +30,24 @@ const ChatArea = () => {
       receiver_id: selectedUser.user_id,
     });
 
+    subscribeToMessages();
+    subscribeToTyping();
+
+
     console.log("messages fetched in fronrtend:", messages);
 
-    subscribeToMessages();
+    
 
-    return () => unsubscribeToMessages();
+    return () => {
+      unsubscribeToMessages();
+      unsubscribeFromTyping();
+    }
   }, [selectedUser?.user_id]);
 
   // Auto scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages,isTyping]);
 
   if (isMessagesLoading) {
     return (
@@ -46,8 +56,9 @@ const ChatArea = () => {
       </div>
     );
   }
-
+  
   console.log("Selected user: ",selectedUser.user_id)
+  
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -71,7 +82,13 @@ const ChatArea = () => {
           </div>
         );
       })}
+      {isTyping && (
+  <div className="text-sm mb-3 text-gray-400 italic ml-2">
+    typing...
+  </div>
+)}
       <div ref={bottomRef} />
+        
     </div>
   );
 };
