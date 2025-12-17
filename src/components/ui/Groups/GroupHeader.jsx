@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X } from "lucide-react";
 import { useChatStore } from "../../../store/useChatStore";
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -10,10 +10,21 @@ const GroupHeader = () => {
     groupInfo,
     setSelectedUser,
     setSelectedGroupId,
+    setGroupInfo,
+    selectedGroupId
   } = useChatStore();
 
+  console.log("group info",groupInfo)
+
+  useEffect(()=>{
+    setGroupInfo();
+  },[selectedGroupId])
   
-  if (!groupInfo) return null;
+  if (!groupInfo) return (
+    <div>
+      fetching group details
+    </div>
+  );
 
   return (
     <div className="nochatbg text-main flex justify-between border-b border-gray-300">
@@ -32,8 +43,10 @@ const GroupHeader = () => {
             {groupInfo.group_name}
           </h2>
 
+          
+
           <div className="text-xs text-gray-500 flex flex-row">
-            {/* {groupInfo.group_description} */}Members: 
+            Members: 
             {groupInfo.chat_users.map((item)=>(
               <p>{item.user.name},</p>
             ))}

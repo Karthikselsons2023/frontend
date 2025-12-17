@@ -54,7 +54,7 @@ export default function ProfileDetailsModal({ open, onClose }) {
 
         {/* Avatar */}
         <img
-          src={`https://selsons.com/${authUser.profile}`}
+          src={authUser.profile}
           alt={authUser.name}
           className="h-20 w-20 rounded-full object-cover mb-3"
         />

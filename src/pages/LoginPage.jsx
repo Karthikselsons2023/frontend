@@ -56,7 +56,7 @@ export default function LoginPage() {
         <h1 className='text-3xl inter-large text-black'>Selsons Chat</h1>
         <input onChange={(e) => setFormData({ ...formData, email: e.target.value })} type="text" placeholder="Enter Email here..." className="input input-bordered border-2 w-full sm:w-100 bg-transparent border-[#1c1b5c] text-black" />
         <input onChange={(e) => setFormData({ ...formData, password: e.target.value })} type="text" placeholder="Enter Password here..." className="input input-bordered border-2 w-full sm:w-100 bg-transparent border-[#1c1b5c] text-black" />
-        <button type="submit" className="btn btn-primary w-full sm:w-100">
+        <button type="submit" className="btn btn-primary bg-[#668AFF] border-none rounded-xl w-full sm:w-100">
           {isLoggingIn ? (
                 <>
                   <span className="loading loading-spinner loading-md"></span>
@@ -64,11 +64,11 @@ export default function LoginPage() {
                 </>
             ) : "Login"}
         </button>
-        <div className="text-center text-sm mt-3">
+        {/* <div className="text-center text-sm mt-3">
           <Link to="/signup" className="text-black underline cursor-pointer">
             Don't have an account? Create a new Account
           </Link>
-        </div>
+        </div> */}
       </form>
 
 

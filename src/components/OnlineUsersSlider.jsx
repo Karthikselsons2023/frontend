@@ -9,6 +9,7 @@ const OnlineUsersSlider = () => {
     allUsers,      // full user objects
     fetchAllUsers,
     authUser,
+    selectedUser
   } = useAuthStore();
 
   const {setSelectedUser} = useChatStore();
@@ -38,8 +39,11 @@ const onlineUserDetails = useMemo(() => {
 
 
   if (onlineUserDetails.length === 0) {
-    return <div className="text-sm text-gray-400">No users online</div>;
+    return <div className="text-sm text-center  pb-3 pt-3 text-gray-400">No users online</div>;
   }
+
+
+  
 
   return (
     <div>
@@ -50,7 +54,14 @@ const onlineUserDetails = useMemo(() => {
         <button
           key={user.user_id}
           className="cursor-pointer flex flex-col items-center min-w-[70px]"
-          onClick={()=>{setSelectedUser(user)}}
+          onClick={()=>{
+            if(user===selectedUser) {
+              return;
+            }
+            else {
+              setSelectedUser(user)
+            }
+          }}
         >
           <img
             src={user.profile}

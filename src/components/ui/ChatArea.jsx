@@ -76,7 +76,7 @@ const ChatArea = () => {
               </time>
             </div>
 
-            <div className={`chat-bubble ${isMine ? "bg-[#5878DF]" : "bg-[#2f2f2f]"} rounded-xl`}>
+            <div className={`chat-bubble ${isMine ? "bg-[#5878DF] " : "bg-[#2f2f2f]"} text-white rounded-xl`}>
               <h2>{message.message_text}</h2>
             </div>
           </div>

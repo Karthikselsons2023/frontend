@@ -8,6 +8,7 @@ import ProfileDetailsModal from "./ui/ProfileDetailsModal";
 import { Link } from "react-router-dom";
 import OnlineUsersSidebar from "./OnlineUsersSlider.jsx";
 import { useAuthStore } from "../store/useAuthStore.js";
+import RecentChats from "./ui/RecentChats.jsx";
 
 const chats = [
   { id: 1, name: "Regis Saffi", last: "Checkout this project" },
@@ -69,7 +70,7 @@ export default function Sidebar({ onSelect }) {
       </NewChatModal>
       </div>
       <OnlineUsersSidebar />
-      <div className="flex-1 overflow-y-auto">
+      {/* <div className="flex-1 overflow-y-auto">
         {chats.map(chat => (
           <div
             key={chat.id}
@@ -84,6 +85,9 @@ export default function Sidebar({ onSelect }) {
             </div>
           </div>
         ))}
+      </div> */}
+      <div className="flex-1 overflow-y-auto">
+        <RecentChats />
       </div>
     </div>
   );

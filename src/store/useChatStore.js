@@ -13,8 +13,11 @@ export const useChatStore = create((set, get) => ({
   isTyping: false,
   creatingGroup: false,
   selectedGroupId: null,
-  groupInfo: {},
+  groupInfo: null,
   isFetchingGroupInfo: false,
+  isFetchingRecentChats: false,
+  sidebarRecentChats : null,
+  
 
   emitTyping: () => {
     const socket = useAuthStore.getState().socket;
@@ -186,13 +189,43 @@ setGroupInfo: async () => {
     const result = res.data;
 
     set({ groupInfo: result.groupInfo });
-    console.log("Group info:", result);
+    console.log("Group info from usechat store:", result);
   } catch (error) {
     console.log("error in fetching group info in frontend:", error);
   } finally {
     set({ isFetchingGroupInfo: false });
   }
-}
+},
+
+
+fetchRecentChats: async () => {
+  set({ isFetchingRecentChats: true });
+
+  try {
+    const authUser = useAuthStore.getState().authUser;
+
+    if (!authUser?.user_id) {
+      console.warn("No auth user, skipping recent chats fetch");
+      return;
+    }
+
+    const res = await axiosInstance.get(
+      `/chat/sidebarChats?user_id=${authUser.user_id}`
+    );
+
+    set({ sidebarRecentChats: res.data.chatList });
+
+    console.log(
+      "Fetched sidebar chats:",
+      res.data.chatList
+    );
+  } catch (error) {
+    console.log("Error in fetching recent chats:", error);
+  } finally {
+    set({ isFetchingRecentChats: false });
+  }
+},
+
 
 
 
