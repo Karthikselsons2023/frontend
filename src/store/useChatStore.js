@@ -164,12 +164,18 @@ export const useChatStore = create((set, get) => ({
     console.log("Setting page to:", page);
     set({ currentPage: page })
   },
-  setSelectedUser: (selectedUser) => {
-    set({ selectedUser,
-      messages: [], 
-     });
-     set({selectedGroupId: null});
-    
+  setSelectedUser: (selectedUserObject) => {
+    const selectedUser = get().selectedUser; 
+    if (selectedUserObject === selectedUser) {
+      return;
+    }
+
+    set({
+      selectedUser : selectedUserObject,
+      messages: [],
+    });
+    set({ selectedGroupId: null });
+
   },
  sendMessage: async (payload) => {
   console.log("POST /chat/send payload:", payload);

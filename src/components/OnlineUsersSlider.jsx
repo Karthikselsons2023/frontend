@@ -55,12 +55,8 @@ const onlineUserDetails = useMemo(() => {
           key={user.user_id}
           className="cursor-pointer flex flex-col items-center min-w-[70px]"
           onClick={()=>{
-            if(user===selectedUser) {
-              return;
-            }
-            else {
+
               setSelectedUser(user)
-            }
           }}
         >
           <img

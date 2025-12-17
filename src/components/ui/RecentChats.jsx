@@ -13,7 +13,8 @@ const RecentChats = () => {
         sidebarRecentChats,
         isFetchingRecentChats,
         fetchRecentChats,
-        setSelectedUser
+        setSelectedUser,
+        selectedUser
     } = useChatStore();
 
 
@@ -41,8 +42,10 @@ const RecentChats = () => {
                     ...chatUser.user
                 };
 
+
                 return (
                     <button
+                    disabled={selectedUser?.user_id === user?.user_id}
                         key={chat.id}
                         onClick={() => setSelectedUser(user)}
                         className="w-full cursor-pointer flex items-center gap-3 p-4 hover:bg-gray-100"
